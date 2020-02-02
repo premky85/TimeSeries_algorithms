@@ -1,139 +1,99 @@
 #include <stdio.h>
-#include "dtw.c"
 #include <time.h>
 #include <math.h>
 #include <unistd.h>
+#include <stdlib.h>
+#include "algs/dtw_algs.c"
 
-double *Random(int n)
-{
-    srand(time(NULL));
-    double * A;
-    A = (double *)calloc(n,sizeof(double));
-    for (int i = 0; i < n; ++i) {
-        A[i] = floor((( (double)rand() ) / (double)RAND_MAX) * 10);
-    }
-    return A;
-}
+#include <string.h>
 
 
-void main() {
+double *Random(int n, int seed);
+
+
+int main(int argc, char *argv[]) {
 
     struct timespec start, stop;
-    double time_fw;
-    double time_bk;
-    double time_fw_bk;
-    double time_par;
+    double time = INFINITY;
+    double rez = INFINITY;
+
 
     //double a[] = {1, 3, 4, 9, 8, 2, 1, 5, 7, 3};
     //double b[] = {1, 6, 2, 3, 0, 9, 4, 3, 6, 3};
+    if (argc != 5) {
+        printf("4 arguments required but %d given.", argc - 1);
+        return -1;
+    }
 
-    int n = 10000;
-    int m = 10000;
-    double *a = Random(n);
+    int seed1 = atoi(argv[3]);
+    int seed2 = atoi(argv[4]);
+    int n = atoi(argv[2]);
+    int m = n;
+    FILE* fd;
+
+    double *a = Random(n, seed1);
     sleep(1);
-    double *b = Random(m);
-
-    /*
-    for (int k = 0; k < n; ++k) {
-        printf("%f ", a[k]);
-    }
-    printf("\n");
-    for (int k = 0; k < m; ++k) {
-        printf("%f ", b[k]);
-    }
-    printf("\n");
-    */
-
-
-    //int n = sizeof(a)/ sizeof(a[0]);
-    //int m = sizeof(b)/ sizeof(b[0]);
+    double *b = Random(n, seed2);
 
 
 
-    printf("dtw FW: =======================================================\n");
 
-    clock_gettime(CLOCK_REALTIME, &start);
-    double dtwFw = dtw_fw(a, b, n, m);
-    clock_gettime(CLOCK_REALTIME, &stop);
-    time_fw = (double)(stop.tv_sec-start.tv_sec) + (double)(stop.tv_nsec-start.tv_nsec)/1000000000;
-    printf("rez: %f\n", dtwFw);
+    if (strcmp(argv[1], "dtw_fw") == 0) {
+        fd = fopen("../../bench/results/dtw_fw.csv", "a+");
+        //printf("dtw FW: =======================================================\n");
+
+        clock_gettime(CLOCK_REALTIME, &start);
+        rez = dtw_fw(a, b, n, m);
+        clock_gettime(CLOCK_REALTIME, &stop);
+        time = (double)(stop.tv_sec-start.tv_sec) + (double)(stop.tv_nsec-start.tv_nsec)/1000000000;
+
+    } else if (strcmp(argv[1], "dtw_bk") == 0) {
+        fd = fopen("../../bench/results/dtw_bk.csv", "a+");
+        //printf("dtw BK: =======================================================\n");
+
+        clock_gettime(CLOCK_REALTIME, &start);
+        rez = dtw_bk(a, b, n, m);
+        clock_gettime(CLOCK_REALTIME, &stop);
+        time = (double)(stop.tv_sec-start.tv_sec) + (double)(stop.tv_nsec-start.tv_nsec)/1000000000;
+
+    } else if (strcmp(argv[1], "dtw_diag") == 0) {
+        fd = fopen("../../bench/results/dtw_diag.csv", "a+");
+        //printf("dtw DIAG: =======================================================\n");
+
+        clock_gettime(CLOCK_REALTIME, &start);
+        rez = dtw_diag(a, b, n, m);
+        clock_gettime(CLOCK_REALTIME, &stop);
+        time = (double)(stop.tv_sec-start.tv_sec) + (double)(stop.tv_nsec-start.tv_nsec)/1000000000;
+
+    } else if (strcmp(argv[1], "dtw_fwbk") == 0) {
+        fd = fopen("../../bench/results/dtw_fwbk.csv", "a+");
+        //printf("dtw FW-BK: =======================================================\n");
+
+        clock_gettime(CLOCK_REALTIME, &start);
+        rez = dtw_fwbk(a, b, n, m);
+        clock_gettime(CLOCK_REALTIME, &stop);
+        time = (double)(stop.tv_sec-start.tv_sec) + (double)(stop.tv_nsec-start.tv_nsec)/1000000000;
+
+    } else if (strcmp(argv[1], "dtw_fwbk_par") == 0) {
+        fd = fopen("../../bench/results/dtw_fwbk_par.csv", "a+");
+        //printf("dtw PARALLEL: =======================================================\n");
+
+        clock_gettime(CLOCK_REALTIME, &start);
+        rez = dtw_fwbk_par(a, b, n, m);
+        clock_gettime(CLOCK_REALTIME, &stop);
+        time = (double)(stop.tv_sec-start.tv_sec) + (double)(stop.tv_nsec-start.tv_nsec)/1000000000;
 
 
-    /*
-    for (int i = 0; i < n; ++i) {
-        for (int j = 0; j < m; ++j) {
-            printf("%2d ", (int)dtwFw[i * m + j]);
-        }
-        printf("\n");
-    }
-     */
+    } /* else if (strcmp(argv[1], "dtw_fw") == 0) {
 
+    }*/
 
-    printf("dtw BK: =======================================================\n");
+    printf("rez: %f\n", rez);
 
-    clock_gettime(CLOCK_REALTIME, &start);
-    double dtwBk = dtw_bk(a, b, n, m);
-    clock_gettime(CLOCK_REALTIME, &stop);
-    time_bk = (double)(stop.tv_sec-start.tv_sec) + (double)(stop.tv_nsec-start.tv_nsec)/1000000000;
-    printf("rez: %f\n", dtwBk);
+    fprintf(fd, "%d,%f\n", n, time);
 
-    /*
-    for (int i = 0; i < n; ++i) {
-        for (int j = 0; j < m; ++j) {
-            printf("%2d ", (int)dtwBk[i * m + j]);
-        }
-        printf("\n");
-    }
-     */
-
-
-    /*
-    printf("dtw DIAG: =======================================================\n");
-
-    double * dtwDiag = dtw_diag(a, b, n, m);
-    for (int i = 0; i < n; ++i) {
-        for (int j = 0; j < m; ++j) {
-            printf("%2d ", (int)dtwDiag[i * m + j]);
-        }
-        printf("\n");
-    }
-     */
-
-    printf("dtw FW-BK: =======================================================\n");
-
-    clock_gettime(CLOCK_REALTIME, &start);
-    double dtwFwBk = dtw_fw_bk(a, b, n, m);
-    clock_gettime(CLOCK_REALTIME, &stop);
-    time_fw_bk = (double)(stop.tv_sec-start.tv_sec) + (double)(stop.tv_nsec-start.tv_nsec)/1000000000;
-    printf("rez: %f\n", dtwFwBk);
-
-    /*
-    for (int i = 0; i < n; ++i) {
-        for (int j = 0; j < m; ++j) {
-            printf("%2d ", (int)dtwFwBk[i * m + j]);
-        }
-        printf("\n");
-    }
-    */
-
-    printf("dtw PARALLEL: =======================================================\n");
-
-    clock_gettime(CLOCK_REALTIME, &start);
-    double dtwPar = dtw_parallel(a, b, n, m);
-    clock_gettime(CLOCK_REALTIME, &stop);
-    time_par = (double)(stop.tv_sec-start.tv_sec) + (double)(stop.tv_nsec-start.tv_nsec)/1000000000;
-    printf("rez: %f\n", dtwPar);
-
-    /*
-    for (int i = 0; i < n; ++i) {
-        for (int j = 0; j < m; ++j) {
-            printf("%2d ", (int)dtwPar[i * m + j]);
-        }
-        printf("\n");
-    }
-    */
-
-    printf("\nTIME: =======================================================\nTime FW: %fs, Time BK: %fs, Time FWBK: %fs, Time PARALLEL: %fs", time_fw, time_bk, time_fw_bk, time_par);
+    //printf("\nTIME: =======================================================\nTime: %fs\n", time);
+    return 0;
 
 }
 
