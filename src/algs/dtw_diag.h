@@ -10,15 +10,16 @@ void matrix_put(double value, int y_pos, int x_pos, double t[], int y_size, int 
 
 double dtw_diag(double *a, double *b, double *t, int n, int m) {
     matrix_put(fabs(a[0] - b[0]), 0, 0, t, n, m);
-
     for (int i = 1; i < n; ++i) {
-        double value = fabs(a[i] - b[0]);
+        double value = matrix_get(i - 1, 0, t, n, m) + fabs(a[i] - b[0]);
         matrix_put(value, i, 0, t, n, m);
     }
     for (int i = 1; i < m; ++i) {
-        double value = fabs(a[0] - b[i]);
+        double value = matrix_get(0, i - 1, t, n, m) + fabs(a[0] - b[i]);
         matrix_put(value, 0, i, t, n, m);
     }
+
+
     for (int i = 1; i < n; ++i) {
         for (int j = 0; j < i; ++j) {
             double m1 = matrix_get(i - j - 1, j, t, n, m);

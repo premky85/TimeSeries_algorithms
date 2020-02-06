@@ -9,7 +9,6 @@
 double matrix_get(int y_pos, int x_pos, double t[], int y_size, int x_size);
 void matrix_put(double value, int y_pos, int x_pos, double t[], int y_size, int x_size);
 
-
 double dtw_fw(double *a, double *b, double *t, int n, int m) {
     matrix_put(fabs(a[0] - b[0]), 0, 0, t, n, m);
     for (int i = 1; i < n; ++i) {
@@ -20,6 +19,7 @@ double dtw_fw(double *a, double *b, double *t, int n, int m) {
         double value = matrix_get(0, i - 1, t, n, m) + fabs(a[0] - b[i]);
         matrix_put(value, 0, i, t, n, m);
     }
+
     for (int i = 1; i < n; ++i) {
         for (int j = 1; j < m; ++j) {
             double m1 = matrix_get(i - 1, j - 1, t, n, m);

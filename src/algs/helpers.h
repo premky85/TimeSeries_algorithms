@@ -21,9 +21,11 @@ inline double *Random(int n, int seed)
     srand(seed);
     double * A;
     A = (double *)calloc(n,sizeof(double));
+    printf("A: ");
     for (int i = 0; i < n; ++i) {
         A[i] = floor((( (double)rand() ) / (double)RAND_MAX) * 10);
-        //printf("%f\n", A[i]);
+        printf("%f\t", A[i]);
     }
+    printf("\n");
     return A;
 }
