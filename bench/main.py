@@ -20,9 +20,9 @@ dtw.dtw_diag.restype = c_double
 dtw.dtw_fwbk.restype = c_double
 dtw.dtw_fwbk_par.restype = c_double
 
-algs = [(dtw.dtw_fw, "dtw_fw"), (dtw.dtw_bk, "dtw_bk"),
-        (dtw.dtw_diag, "dtw_diag"), (dtw.dtw_fwbk, "dtw_fwbk"),
-        (dtw.dtw_fwbk_par, "dtw_fwbk_par"), (dtw.dtw_prunned, "dtw_prunned")] #(dtw.dtw_prunned, "dtw_prunned")
+algs = [(dtw.dtw_fw, "dtw_fw"), #(dtw.dtw_bk, "dtw_bk"),
+        (dtw.dtw_diag, "dtw_diag"), #(dtw.dtw_fwbk, "dtw_fwbk"),
+        (dtw.dtw_fwbk_par, "dtw_fwbk_par")]#, (dtw.dtw_prunned, "dtw_prunned")] #(dtw.dtw_prunned, "dtw_prunned")
 
 for alg in algs:
     f = open("results/" + alg[1] + ".csv", "w")
