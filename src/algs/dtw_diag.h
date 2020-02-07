@@ -21,8 +21,36 @@ double dtw_diag(double *a, double *b, double *t, int n, int m) {
     }
     //int cnt = 0;
 
-    /*
+
     int i;
+    for (int k = 1; k < n + m - 3; ++k) {
+        if(k < n) {
+            i = k;
+            for (int j = 1; j < k; ++j) {
+                double m1 = matrix_get(i - 1, j, t, n, m);
+                double m2 = matrix_get(i, j - 1, t, n, m);
+                double m3 = matrix_get(i - 1, j - 1, t, n, m);
+                double value = fabs(a[i] - b[j]) + fmin(m1, fmin(m2, m3));
+                matrix_put(value, i, j, t, n, m);
+                --i;
+            }
+        } else {
+            i = k - n - 1;
+            for (int j = n - 1; j >= k; j--) {
+                double m1 = matrix_get(i - 1, j, t, n, m);
+                double m2 = matrix_get(i, j - 1, t, n, m);
+                double m3 = matrix_get(i - 1, j - 1, t, n, m);
+                double value = fabs(a[i] - b[j]) + fmin(m1, fmin(m2, m3));
+                matrix_put(value, i, j, t, n, m);
+                i++;
+                //cnt++;
+            }
+        }
+    }
+
+
+
+/*
     for (int k = 1; k < n; k++) {
         i = k;
         for (int j = 1; j <= k; j++) {
@@ -48,11 +76,6 @@ double dtw_diag(double *a, double *b, double *t, int n, int m) {
             //cnt++;
         }
     }
-     */
-
-
-
-
 
 
     for (int i = 1; i < n; ++i) {
@@ -66,6 +89,8 @@ double dtw_diag(double *a, double *b, double *t, int n, int m) {
         }
 
     }
+
+
     for (int j = 2; j < m; ++j) {
         for (int i = 0; i < n - j; ++i) {
             double m1 = matrix_get(n - 1 - i - 1, j + i - 1, t, n, m);
@@ -77,6 +102,8 @@ double dtw_diag(double *a, double *b, double *t, int n, int m) {
 
         }
     }
+    */
+
      
 
     //printf("cntDIAG: %d\n", cnt);

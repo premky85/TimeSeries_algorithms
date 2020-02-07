@@ -11,16 +11,16 @@ include_directories(algs)
 
 
 
-#add_library(${PROJECT_NAME} SHARED
-#        algs/dtw_bk.h
-#        algs/dtw_diag.h
-#        algs/dtw_fwbk.h
-#        algs/dtw_fwbk_par.h
-#        algs/dtw_fw.h
-#        algs/helpers.h
-#        algs/dtw_algs.c
-#        algs/dtw_prunned.h)
+add_library(${PROJECT_NAME} SHARED
+        algs/dtw_bk.h
+        algs/dtw_diag.h
+        algs/dtw_fwbk.h
+        algs/dtw_fwbk_par.h
+        algs/dtw_fw.h
+        algs/helpers.h
+        algs/dtw_algs.c
+        algs/dtw_prunned.h)
 
-add_executable(${PROJECT_NAME} main.c)
+#add_executable(${PROJECT_NAME} main.c)
 set_target_properties(${PROJECT_NAME} PROPERTIES LINKER_LANGUAGE C)
 target_link_libraries(${PROJECT_NAME} m Threads::Threads)
