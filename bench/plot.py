@@ -14,6 +14,7 @@ data.columns = ["time_fw", "time_bk", "time_diag", "time_fwbk", "time_fwbk_par",
 
 plt.figure()
 data.plot()
+plt.ylabel("sec")
 plt.show()
 
 
