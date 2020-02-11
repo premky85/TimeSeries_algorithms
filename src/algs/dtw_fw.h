@@ -19,6 +19,7 @@ double dtw_fw(double *a, double *b, double *t, int n, int m) {
         double value = matrix_get(0, i - 1, t, n, m) + fabs(a[0] - b[i]);
         matrix_put(value, 0, i, t, n, m);
     }
+
     //int cnt = 0;
     for (int i = 1; i < n; ++i) {
         for (int j = 1; j < m; ++j) {
@@ -30,6 +31,7 @@ double dtw_fw(double *a, double *b, double *t, int n, int m) {
             //cnt++;
         }
     }
+
     //printf("cntFW: %d\n", cnt);
 
     double rez = matrix_get(n - 1, m - 1, t, n, m);

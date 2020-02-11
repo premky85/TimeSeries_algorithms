@@ -4,6 +4,7 @@
 
 #include <math.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 
 inline double matrix_get(int y_pos, int x_pos, double t[], int y_size, int x_size);
@@ -23,29 +24,23 @@ double dtw_diag(double *a, double *b, double *t, int n, int m) {
 
 
     int i;
-    for (int k = 1; k < n + m - 3; ++k) {
-        if(k < n) {
-            i = k;
-            for (int j = 1; j < k; ++j) {
-                double m1 = matrix_get(i - 1, j, t, n, m);
-                double m2 = matrix_get(i, j - 1, t, n, m);
-                double m3 = matrix_get(i - 1, j - 1, t, n, m);
-                double value = fabs(a[i] - b[j]) + fmin(m1, fmin(m2, m3));
-                matrix_put(value, i, j, t, n, m);
-                --i;
-            }
-        } else {
-            i = k - n - 1;
-            for (int j = n - 1; j >= k; j--) {
-                double m1 = matrix_get(i - 1, j, t, n, m);
-                double m2 = matrix_get(i, j - 1, t, n, m);
-                double m3 = matrix_get(i - 1, j - 1, t, n, m);
-                double value = fabs(a[i] - b[j]) + fmin(m1, fmin(m2, m3));
-                matrix_put(value, i, j, t, n, m);
-                i++;
-                //cnt++;
-            }
+    int j;
+    int upLim;
+    for (int k = 1; k <= n + m - 2; ++k) {
+        i = k < n ? k : n - 1;
+        j = k < n ? 1 : k - n + 1;
+        upLim = k < n ? k : n - 1;
+
+        while (j <= upLim) {
+            double m1 = matrix_get(i - 1, j, t, n, m);
+            double m2 = matrix_get(i, j - 1, t, n, m);
+            double m3 = matrix_get(i - 1, j - 1, t, n, m);
+            double value = fabs(a[i] - b[j]) + fmin(m1, fmin(m2, m3));
+            matrix_put(value, i, j, t, n, m);
+            i--;
+            j++;
         }
+
     }
 
 
@@ -77,7 +72,9 @@ double dtw_diag(double *a, double *b, double *t, int n, int m) {
         }
     }
 
+*/
 
+/*
     for (int i = 1; i < n; ++i) {
         for (int j = 0; j < i; ++j) {
             double m1 = matrix_get(i - j - 1, j, t, n, m);
@@ -91,6 +88,7 @@ double dtw_diag(double *a, double *b, double *t, int n, int m) {
     }
 
 
+
     for (int j = 2; j < m; ++j) {
         for (int i = 0; i < n - j; ++i) {
             double m1 = matrix_get(n - 1 - i - 1, j + i - 1, t, n, m);
@@ -102,7 +100,9 @@ double dtw_diag(double *a, double *b, double *t, int n, int m) {
 
         }
     }
-    */
+     */
+
+
 
      
 

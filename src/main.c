@@ -66,6 +66,15 @@ int main(int argc, char *argv[]) {
         clock_gettime(CLOCK_REALTIME, &stop);
         time = (double)(stop.tv_sec-start.tv_sec) + (double)(stop.tv_nsec-start.tv_nsec)/1000000000;
 
+    } else if (strcmp(argv[1], "dtw_diag_par") == 0) {
+        fd = fopen("../../bench/results/dtw_diag_par.csv", "a+");
+        //printf("dtw DIAG: =======================================================\n");
+
+        clock_gettime(CLOCK_REALTIME, &start);
+        rez = dtw_diag_par(a, b, t, n, m);
+        clock_gettime(CLOCK_REALTIME, &stop);
+        time = (double)(stop.tv_sec-start.tv_sec) + (double)(stop.tv_nsec-start.tv_nsec)/1000000000;
+
     } else if (strcmp(argv[1], "dtw_fwbk") == 0) {
         fd = fopen("../../bench/results/dtw_fwbk.csv", "a+");
         //printf("dtw FW-BK: =======================================================\n");
@@ -101,7 +110,7 @@ int main(int argc, char *argv[]) {
 
     fprintf(fd, "%d,%f\n", n, time);
 
-    //printf("\nTIME: =======================================================\nTime: %fs\n", time);
+    printf("\nTIME: =======================================================\nTime: %fs\n", time);
     return 0;
 
 }
