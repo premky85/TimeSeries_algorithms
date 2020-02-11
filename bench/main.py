@@ -20,12 +20,13 @@ dtw.dtw_prunned.restype = c_double
 dtw.dtw_diag.restype = c_double
 dtw.dtw_fwbk.restype = c_double
 dtw.dtw_fwbk_par.restype = c_double
+dtw.dtw_diag_par.restype = c_double
 
 algs = [(dtw.dtw_fw, "dtw_fw"),
         (dtw.dtw_prunned, "dtw_prunned"),
         (dtw.dtw_bk, "dtw_bk"),
         (dtw.dtw_diag, "dtw_diag"),
-
+        (dtw.dtw_diag_par, "dtw_diag_par"),
         (dtw.dtw_fwbk, "dtw_fwbk"),
         (dtw.dtw_fwbk_par, "dtw_fwbk_par"),
         ]
