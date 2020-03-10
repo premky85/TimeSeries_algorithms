@@ -21,11 +21,14 @@ thread_data_t thr_struct[2];
 
 void *dtw_upper_par(void*);
 void *dtw_lower_par(void*);
-double matrix_get(int y_pos, int x_pos, double t[], int y_size, int x_size);
-void matrix_put(double value, int y_pos, int x_pos, double t[], int y_size, int x_size);
+inline double matrix_get(int x_pos, int y_pos, double t[], int x_size, int y_size);
+inline void matrix_put(double value, int x_pos, int y_pos, double t[], int x_size, int y_size);
 
 
-double dtw_fwbk_par(double *a, double *b, double *t, int n, int m) {
+double dtw_fwbk_par(double *a, double *b, int n, int m) {
+    double *t = (double*)malloc(n * m * sizeof(double));
+
+
     thr_struct[0].t = t;
     thr_struct[0].a = a;
     thr_struct[0].b = b;
@@ -60,6 +63,8 @@ double dtw_fwbk_par(double *a, double *b, double *t, int n, int m) {
     d = fmin(d, x);
 
     double rez = d;
+    free(t);
+
     return rez;
 }
 

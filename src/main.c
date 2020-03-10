@@ -30,7 +30,7 @@ int main(int argc, char *argv[]) {
     int n = atoi(argv[2]);
     int m = n;
     FILE* fd;
-    double *t = calloc(n * m, sizeof(double));
+    //double *t = calloc(n * m, sizeof(double));
 
     double *a = Random(n, seed1);
     sleep(1);
@@ -44,7 +44,7 @@ int main(int argc, char *argv[]) {
         //printf("dtw FW: =======================================================\n");
 
         clock_gettime(CLOCK_REALTIME, &start);
-        rez = dtw_fw(a, b, t, n, m);
+        rez = dtw_fw(a, b, n, m);
         clock_gettime(CLOCK_REALTIME, &stop);
         time = (double)(stop.tv_sec-start.tv_sec) + (double)(stop.tv_nsec-start.tv_nsec)/1000000000;
 
@@ -53,7 +53,7 @@ int main(int argc, char *argv[]) {
         //printf("dtw BK: =======================================================\n");
 
         clock_gettime(CLOCK_REALTIME, &start);
-        rez = dtw_bk(a, b, t, n, m);
+        rez = dtw_bk(a, b, n, m);
         clock_gettime(CLOCK_REALTIME, &stop);
         time = (double)(stop.tv_sec-start.tv_sec) + (double)(stop.tv_nsec-start.tv_nsec)/1000000000;
 
@@ -62,7 +62,7 @@ int main(int argc, char *argv[]) {
         //printf("dtw DIAG: =======================================================\n");
 
         clock_gettime(CLOCK_REALTIME, &start);
-        rez = dtw_diag(a, b, t, n, m);
+        rez = dtw_diag(a, b, n, m);
         clock_gettime(CLOCK_REALTIME, &stop);
         time = (double)(stop.tv_sec-start.tv_sec) + (double)(stop.tv_nsec-start.tv_nsec)/1000000000;
 
@@ -71,7 +71,7 @@ int main(int argc, char *argv[]) {
         //printf("dtw DIAG: =======================================================\n");
 
         clock_gettime(CLOCK_REALTIME, &start);
-        rez = dtw_diag_par(a, b, t, n, m);
+        rez = dtw_diag_par(a, b, n, m);
         clock_gettime(CLOCK_REALTIME, &stop);
         time = (double)(stop.tv_sec-start.tv_sec) + (double)(stop.tv_nsec-start.tv_nsec)/1000000000;
 
@@ -80,7 +80,7 @@ int main(int argc, char *argv[]) {
         //printf("dtw FW-BK: =======================================================\n");
 
         clock_gettime(CLOCK_REALTIME, &start);
-        rez = dtw_fwbk(a, b, t, n, m);
+        rez = dtw_fwbk(a, b, n, m);
         clock_gettime(CLOCK_REALTIME, &stop);
         time = (double)(stop.tv_sec-start.tv_sec) + (double)(stop.tv_nsec-start.tv_nsec)/1000000000;
 
@@ -89,7 +89,7 @@ int main(int argc, char *argv[]) {
         //printf("dtw PARALLEL: =======================================================\n");
 
         clock_gettime(CLOCK_REALTIME, &start);
-        rez = dtw_fwbk_par(a, b, t, n, m);
+        rez = dtw_fwbk_par(a, b, n, m);
         clock_gettime(CLOCK_REALTIME, &stop);
         time = (double)(stop.tv_sec-start.tv_sec) + (double)(stop.tv_nsec-start.tv_nsec)/1000000000;
 
@@ -99,10 +99,70 @@ int main(int argc, char *argv[]) {
         //printf("dtw PARALLEL: =======================================================\n");
 
         clock_gettime(CLOCK_REALTIME, &start);
-        rez = dtw_prunned(a, b, t, n, m);
+        rez = dtw_prunned(a, b, n, m);
         clock_gettime(CLOCK_REALTIME, &stop);
         time = (double)(stop.tv_sec-start.tv_sec) + (double)(stop.tv_nsec-start.tv_nsec)/1000000000;
-    } /*else if (strcmp(argv[1], "dtw_fw") == 0) {
+    } else if (strcmp(argv[1], "dtw_fw_mem") == 0) {
+        fd = fopen("../../bench/results/dtw_fw_mem.csv", "a+");
+        //printf("dtw PARALLEL: =======================================================\n");
+
+        clock_gettime(CLOCK_REALTIME, &start);
+        rez = dtw_fw_mem(a, b, n, m);
+        clock_gettime(CLOCK_REALTIME, &stop);
+        time = (double)(stop.tv_sec-start.tv_sec) + (double)(stop.tv_nsec-start.tv_nsec)/1000000000;
+    } else if (strcmp(argv[1], "dtw_bk_mem") == 0) {
+        fd = fopen("../../bench/results/dtw_bk_mem.csv", "a+");
+        //printf("dtw PARALLEL: =======================================================\n");
+
+        clock_gettime(CLOCK_REALTIME, &start);
+        rez = dtw_bk_mem(a, b, n, m);
+        clock_gettime(CLOCK_REALTIME, &stop);
+        time = (double)(stop.tv_sec-start.tv_sec) + (double)(stop.tv_nsec-start.tv_nsec)/1000000000;
+    } else if (strcmp(argv[1], "dtw_fwbk_par_mem") == 0) {
+        fd = fopen("../../bench/results/dtw_fwbk_par_mem.csv", "a+");
+        //printf("dtw PARALLEL: =======================================================\n");
+
+        clock_gettime(CLOCK_REALTIME, &start);
+        rez = dtw_fwbk_par_mem(a, b, n, m);
+        clock_gettime(CLOCK_REALTIME, &stop);
+        time = (double)(stop.tv_sec-start.tv_sec) + (double)(stop.tv_nsec-start.tv_nsec)/1000000000;
+    } else if (strcmp(argv[1], "dtw_diag_cache") == 0) {
+        fd = fopen("../../bench/results/dtw_diag_cache.csv", "a+");
+        //printf("dtw DIAG: =======================================================\n");
+
+        clock_gettime(CLOCK_REALTIME, &start);
+        rez = dtw_diag_cache(a, b, n, m);
+        clock_gettime(CLOCK_REALTIME, &stop);
+        time = (double)(stop.tv_sec-start.tv_sec) + (double)(stop.tv_nsec-start.tv_nsec)/1000000000;
+
+    } else if (strcmp(argv[1], "dtw_diag_cache_mem") == 0) {
+        fd = fopen("../../bench/results/dtw_diag_cache_mem.csv", "a+");
+        //printf("dtw DIAG: =======================================================\n");
+
+        clock_gettime(CLOCK_REALTIME, &start);
+        rez = dtw_diag_cache_mem(a, b, n, m);
+        clock_gettime(CLOCK_REALTIME, &stop);
+        time = (double)(stop.tv_sec-start.tv_sec) + (double)(stop.tv_nsec-start.tv_nsec)/1000000000;
+
+    } else if (strcmp(argv[1], "dtw_diag_par_cache") == 0) {
+        fd = fopen("../../bench/results/dtw_diag_par_cache.csv", "a+");
+        //printf("dtw DIAG: =======================================================\n");
+
+        clock_gettime(CLOCK_REALTIME, &start);
+        rez = dtw_diag_par_cache(a, b, n, m);
+        clock_gettime(CLOCK_REALTIME, &stop);
+        time = (double)(stop.tv_sec-start.tv_sec) + (double)(stop.tv_nsec-start.tv_nsec)/1000000000;
+
+    } else if (strcmp(argv[1], "dtw_diag_par_cache_mem") == 0) {
+        fd = fopen("../../bench/results/dtw_diag_par_cache_mem.csv", "a+");
+        //printf("dtw DIAG: =======================================================\n");
+
+        clock_gettime(CLOCK_REALTIME, &start);
+        rez = dtw_diag_par_cache_mem(a, b, n, m);
+        clock_gettime(CLOCK_REALTIME, &stop);
+        time = (double)(stop.tv_sec-start.tv_sec) + (double)(stop.tv_nsec-start.tv_nsec)/1000000000;
+
+    }/*else if (strcmp(argv[1], "dtw_fw") == 0) {
 
     }*/
 

@@ -26,8 +26,8 @@ typedef struct _thread_data_t_diag {
 
 thread_data_t_diag thr_struct_diag[NTHR];
 
-inline double matrix_get(int y_pos, int x_pos, double t[], int y_size, int x_size);
-inline void matrix_put(double value, int y_pos, int x_pos, double t[], int y_size, int x_size);
+inline double matrix_get(int x_pos, int y_pos, double t[], int x_size, int y_size);
+inline void matrix_put(double value, int x_pos, int y_pos, double t[], int x_size, int y_size);
 
 void diag_thr(void *args) {
     thread_data_t_diag* threadData;
@@ -89,7 +89,9 @@ void diag_thr(void *args) {
     pthread_exit(NULL);
 }
 
-double dtw_diag_par(double *a_, double *b_, double *t_, int n, int m) {
+double dtw_diag_par(double *a_, double *b_, int n, int m) {
+    double *t_ = (double*)malloc(m * n * sizeof(double));
+
     t = t_;
     a = a_;
     b = b_;
@@ -112,5 +114,7 @@ double dtw_diag_par(double *a_, double *b_, double *t_, int n, int m) {
 
     //printf("cntDIAG: %d\n", cnt);
     double rez = matrix_get(n - 1, m - 1, t, n, m);
+    free(t_);
+
     return rez;
 }

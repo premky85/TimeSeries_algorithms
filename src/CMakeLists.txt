@@ -19,7 +19,17 @@ add_library(${PROJECT_NAME} SHARED
         algs/dtw_fw.h
         algs/helpers.h
         algs/dtw_algs.c
-        algs/dtw_prunned.h algs/dtw_diag_par.h)
+        algs/dtw_prunned.h
+        algs/dtw_diag_par.h
+        algs/dtw_fw_mem.h
+        algs/dtw_bk_mem.h
+        algs/dtw_fwbk_par_mem.h
+        algs/dtw_diag_cache.h
+        algs/dtw_diag_cache_mem.h
+        algs/dtw_diag_par_cache.h
+        algs/dtw_diag_par_cache_mem.h
+)
+
 
 #add_executable(${PROJECT_NAME} main.c)
 set_target_properties(${PROJECT_NAME} PROPERTIES LINKER_LANGUAGE C)
