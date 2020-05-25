@@ -4,11 +4,13 @@
 #include <math.h>
 #include <stdlib.h>
 
-double matrix_get(int y_pos, int x_pos, double t[], int y_size, int x_size);
-void matrix_put(double value, int y_pos, int x_pos, double t[], int y_size, int x_size);
+inline double matrix_get(int x_pos, int y_pos, double t[], int x_size, int y_size);
+inline void matrix_put(double value, int x_pos, int y_pos, double t[], int x_size, int y_size);
 
 
-double dtw_bk(double *a, double *b, double *t, int n, int m) {
+double dtw_bk(double *a, double *b, int n, int m) {
+    double *t = (double*)malloc(n * m * sizeof(double));
+
     matrix_put(fabs(a[n - 1] - b[m - 1]), n - 1, m - 1, t, n, m);
     for (int i = n - 2; i >= 0; --i) {
         double value = matrix_get(i + 1, m - 1, t, n, m) + fabs(a[i] - b[m - 1]);
@@ -29,5 +31,7 @@ double dtw_bk(double *a, double *b, double *t, int n, int m) {
 
     }
     double rez = matrix_get(0, 0, t, n, m);
+    free(t);
+
     return rez;
 }

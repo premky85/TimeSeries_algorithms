@@ -7,11 +7,11 @@
 #include <time.h>
 
 
-inline void matrix_put(double value, int y_pos, int x_pos, double t[], int y_size, int x_size) {
+inline void matrix_put(double value, int x_pos, int y_pos, double t[], int x_size, int y_size) {
     t[y_pos * x_size + x_pos] = value;
 }
 
-inline double matrix_get(int y_pos, int x_pos, double t[], int y_size, int x_size) {
+inline double matrix_get(int x_pos, int y_pos, double t[], int x_size, int y_size) {
     return t[y_pos * x_size + x_pos];
 }
 
