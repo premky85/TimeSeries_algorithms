@@ -77,7 +77,7 @@ double dtw_diag(double *a, double *b, double *t, int n, int m) {
 
         }
     }
-     
+
 
     //printf("cntDIAG: %d\n", cnt);
     double rez = matrix_get(n - 1, m - 1, t, n, m);
