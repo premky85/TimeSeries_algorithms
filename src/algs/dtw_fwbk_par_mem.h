@@ -70,13 +70,13 @@ double dtw_fwbk_par_mem(double *a, double *b, int n, int m) {
 
     double d = INFINITY;
 
-    for (int k = 0; k < m - 1; ++k) {
+    for (int k = 0; k < n - 1; ++k) {
         double x = mid1[k] + mid2[k];
         double y = mid1[k] + mid2[k + 1];
         d = fmin(d, fmin(x, y));
     }
 
-    double x = mid1[m - 1] + mid2[m - 1];
+    double x = mid1[n - 1] + mid2[n - 1];
     d = fmin(d, x);
 
     double rez = d;
@@ -98,7 +98,7 @@ void *dtw_upper_par_mem(void *args) {
     int n = threadData->n;
     int m = threadData->m;
 
-    int half = floor((double)(n) / 2);
+    int half = floor((double)(m) / 2);
 
     char current = 0;
 
@@ -142,7 +142,7 @@ void *dtw_lower_par_mem(void *args) {
     int m = threadData->m;
     char current = 0;
 
-    int half = floor((double)(n) / 2);
+    int half = floor((double)(m) / 2);
 
     t1[n - 1] = fabs(a[n - 1] - b[m - 1]);
     for (int i = n - 2; i >= 0; --i) {

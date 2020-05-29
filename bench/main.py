@@ -65,15 +65,15 @@ for alg in algs + algs_mem:
 for x in small:
     arr1 = np.rint(np.random.rand(x) * 10).ctypes.data_as(POINTER(c_int))
     arr2 = np.rint(np.random.rand(x) * 10).ctypes.data_as(POINTER(c_int))
-    gc.collect()
+    #gc.collect()
 
     #dtw.dtw_fw(arr1, arr2, x, x)
     print("n: " + str(x))
     for alg in algs + algs_mem:
-        gc.collect()
+        #gc.collect()
         tim = 0
         for i in range(10):
-            gc.collect()
+            #gc.collect()
             start = time.perf_counter()
             rez = alg[0](arr1, arr2, x, x)
             end = time.perf_counter()
@@ -90,16 +90,16 @@ for x in medium:
     arr1 = np.rint(np.random.rand(x) * 10).ctypes.data_as(POINTER(c_int))
     arr2 = np.rint(np.random.rand(x) * 10).ctypes.data_as(POINTER(c_int))
     #arrt = np.zeros(x * x).ctypes.data_as(POINTER(c_double))
-    gc.collect()
+    #gc.collect()
 
     #dtw.dtw_fw(arr1, arr2, x, x)
     print("n: " + str(x))
 
     for alg in algs + algs_mem:
-        gc.collect()
+        #gc.collect()
         tim = 0
         for i in range(10):
-            gc.collect()
+            #gc.collect()
             start = time.perf_counter()
             rez = alg[0](arr1, arr2, x, x)
             end = time.perf_counter()
@@ -116,16 +116,16 @@ for x in large:
     arr1 = np.rint(np.random.rand(x) * 10).ctypes.data_as(POINTER(c_int))
     arr2 = np.rint(np.random.rand(x) * 10).ctypes.data_as(POINTER(c_int))
     #arrt = np.zeros(x * x).ctypes.data_as(POINTER(c_double))
-    gc.collect()
+    #gc.collect()
 
     #dtw.dtw_fw(arr1, arr2, x, x)
     print("n: " + str(x))
 
     for alg in algs + algs_mem:
-        gc.collect()
+        #gc.collect()
         tim = 0
         for i in range(10):
-            gc.collect()
+            #gc.collect()
             start = time.perf_counter()
             rez = alg[0](arr1, arr2, x, x)
             end = time.perf_counter()
@@ -142,15 +142,15 @@ for x in xlarge:
     arr1 = np.rint(np.random.rand(x) * 10).ctypes.data_as(POINTER(c_int))
     arr2 = np.rint(np.random.rand(x) * 10).ctypes.data_as(POINTER(c_int))
     #arrt = np.zeros(x * x).ctypes.data_as(POINTER(c_double))
-    gc.collect()
+    #gc.collect()
 
     #dtw.dtw_fw(arr1, arr2, x, x)
     print("n: " + str(x))
     for alg in algs_mem:
-        gc.collect()
+        #gc.collect()
         tim = 0
         for i in range(10):
-            gc.collect()
+            #gc.collect()
             start = time.perf_counter()
             rez = alg[0](arr1, arr2, x, x)
             end = time.perf_counter()

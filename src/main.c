@@ -34,7 +34,7 @@ int main(int argc, char *argv[]) {
 
     double *a = Random(n, seed1);
     sleep(1);
-    double *b = Random(n, seed2);
+    double *b = Random(m, seed2);
 
 
 

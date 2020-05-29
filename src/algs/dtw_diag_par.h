@@ -37,6 +37,8 @@ void diag_thr(void *args) {
     int n = threadData->n;
     int m = threadData->m;
 
+    int dif = n == m ? 0 : 1;
+
 
     if (id == 0) {
         for (int i = 1; i < n; ++i) {
@@ -56,34 +58,65 @@ void diag_thr(void *args) {
             matrix_put(value, 0, i, t, n, m);
         }
     }
+    pthread_barrier_wait(&barrier);
+    if (id == 0) {
+        double m5 = matrix_get(0, 0, t, n, m);
+        double m2 = matrix_get(0, 1, t, n, m);
+        double m3 = matrix_get(1, 0, t, n, m);
 
-    int i;
-    for (int k = 1; k < n; k++) {
+
+        double v = fabs(a[1] - b[1]) + fmin(m5, fmin(m2, m3));
+        matrix_put(v, 1, 1, t, n, m);
+    }
+
+    //
+    for (int i = 2; i < n; ++i) {
         pthread_barrier_wait(&barrier);
-        i = k - id;
-        for (int j = id + 1; j <= k; j = j + NTHR) {
-            double m1 = matrix_get(i - 1, j, t, n, m);
-            double m2 = matrix_get(i, j - 1, t, n, m);
-            double m3 = matrix_get(i - 1, j - 1, t, n, m);
-            double value = fabs(a[i] - b[j]) + fmin(m1, fmin(m2, m3));
-            matrix_put(value, i, j, t, n, m);
-            i = i - NTHR;
+        int step = ceil((double)(i) / NTHR);
+        int start = id * step;
+
+        for (int j = start; j < start + step && j < i; ++j) {
+            double m1 = matrix_get(i - j - 1, j, t, n, m);
+            double m2 = matrix_get(i - j - 1, j + 1, t, n, m);
+            double m3 = matrix_get(i - j, j, t, n, m);
+            double value = fabs(a[i - j] - b[j + 1]) + fmin(m1, fmin(m2, m3));
+            matrix_put(value, i - j, j + 1, t, n, m);
+
+            //cnt++;
+        }
+    }
+
+    for (int i = n; i < m; i++) {
+        pthread_barrier_wait(&barrier);
+        int step = ceil((double)(n - 1) / NTHR);
+        int start = id * step;
+
+
+        for (int j = start; j < start + step && j < n - 1; ++j) {
+            double m1 = matrix_get(n - j - 1, j + 1 + i - n, t, n, m);
+            double m2 = matrix_get(n - j - 2, j + 1 + i - n, t, n, m);
+            double m3 = matrix_get(n - j - 2, j + 2 + i - n, t, n, m);
+            double value = fabs(a[n - 1 - j] - b[j + 2 + i - n]) + fmin(m1, fmin(m2, m3));
+            matrix_put(value, n - j - 1, j + 2 + i - n, t, n, m);
+
             //cnt++;
         }
     }
 
 
-    for (int k = 1; k < n; k++) {
+    for (int i = m; i < m + n - 1; i++) {
         pthread_barrier_wait(&barrier);
-        i = k + id;
-        for (int j = n - 1 - id; j >= k; j = j- NTHR) {
-            double m1 = matrix_get(i - 1, j, t, n, m);
-            double m2 = matrix_get(i, j - 1, t, n, m);
-            double m3 = matrix_get(i - 1, j - 1, t, n, m);
-            double value = fabs(a[i] - b[j]) + fmin(m1, fmin(m2, m3));
-            matrix_put(value, i, j, t, n, m);
-            i = i + NTHR;
-            //cnt++;
+        int step = ceil((double)(m + n - i - 1) / NTHR);
+        int start = id * step;
+
+
+        for (int j = start; j < start + step && j < m + n - i - 1 - dif; ++j) {
+            double m1 = matrix_get(m - n - 1 - j, i - n + 1 + j, t, n, m);
+            double m2 = matrix_get(m - n - 2 - j, i - n + 1 + j, t, n, m);
+            double m3 = matrix_get(m - n - 2 - j, i - n + 2 + j, t, n, m);
+            double value = fabs(a[n - 1 - j] - b[j + 1 + i - n + dif]) + fmin(m1, fmin(m2, m3));
+
+            matrix_put(value, n - 1 - j, j + 1 + i - n + dif, t, n, m);
         }
     }
     pthread_exit(NULL);

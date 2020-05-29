@@ -45,26 +45,38 @@ double dtw_diag_cache(double *a, double *b, int n, int m) {
         }
     }
 
-    for (int i = n; i < (2 * mo - n + 1); ++i) {
-        for (int j = 0; j < (2 * n - 1) - i; ++j) {
+    for (int i = n; i < mo; ++i) {
+        for (int j = 0; j < n - 1; ++j) {
             double m1 = matrix_get(j + 1, i - 1, t, n, m);
             double m2 = matrix_get(j, i - 1, t, n, m);
             double m3 = matrix_get(j, i - 2, t, n, m);
             double m4 = a[j + 1];
-            double m5 = b[((2 * n - 1) - i) - j];
-            double value = fabs(a[j + 1] - b[((2 * n - 1) - i) - j]) + fmin(m1, fmin(m2, m3));
+            double m5 = b[((2 * n - 1) - i) - j + 2*(i - n)];
+            double value = fabs(a[j + 1] - b[((2 * n - 1) - i) - j + 2*(i - n)]) + fmin(m1, fmin(m2, m3));
+            matrix_put(value, j + 1, i, t, n, m);
+        }
+    }
+
+    for (int i = mo; i < mo + 1; ++i) {
+        for (int j = 0; j < n + mo - i - 1; ++j) {
+            double m1 = matrix_get(j + 1, i - 1, t, n, m);
+            double m2 = matrix_get(j, i - 1, t, n, m);
+            double m3 = matrix_get(j , i - 2, t, n, m);
+            double m4 = a[j + 1];
+            double m5 = b[mo - j - 1];
+            double value = fabs(a[j + 1] - b[mo - j - 1]) + fmin(m1, fmin(m2, m3));
             matrix_put(value, j, i, t, n, m);
         }
     }
 
-    for (int i = (2 * mo - n + 1); i < m ; ++i) {
-        for (int j = 0; j < (2 * n - 1) - i; ++j) {
-            double m1 = matrix_get(j + 1, i - 1, t, n, m);
-            double m2 = matrix_get(j, i - 1, t, n, m);
+    for (int i = mo + 1; i < m ; ++i) {
+        for (int j = 0; j < n + mo - i - 1; ++j) {
+            double m1 = matrix_get(j, i - 1, t, n, m);
+            double m2 = matrix_get(j + 1, i - 1, t, n, m);
             double m3 = matrix_get(j + 1, i - 2, t, n, m);
-            double m4 = a[j + 1 + (i - n)];
-            double m5 = b[((2 * n - 1) - i) - j + (i - n)];
-            double value = fabs(a[j + 1 + (i - n)] - b[n - j - 1]) + fmin(m1, fmin(m2, m3));
+            double m4 = a[j + 1 + i - mo];
+            double m5 = b[mo - j - 1];
+            double value = fabs(a[j + 1 + i - mo] - b[mo - j - 1]) + fmin(m1, fmin(m2, m3));
             matrix_put(value, j, i, t, n, m);
         }
     }
