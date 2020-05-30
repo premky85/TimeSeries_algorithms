@@ -7,7 +7,7 @@
 #include <stdio.h>
 #include <pthread.h>
 
-#define NTHR 12
+#define NTHR 2
 
 pthread_barrier_t   barrier;
 
@@ -123,17 +123,35 @@ void diag_thr_cache_mem(void *args) {
         t_new[prev][i] = fabs(a[i] - b[0]) + t_new[prevprev][i - 1];
     }
 
-    for (int i = n; i < (2 * mo - n + 1); ++i) {
+    for (int i = n + 1; i < mo; ++i) {
         pthread_barrier_wait(&barrier);
-        int step = ceil((double)((2 * n - 1) - i - 1) / nthr);
+        int step = ceil((double)(n - 1) / NTHR);
         int start = id * step;
-        for (int j = start; j < start + step && j < (2 * n - 1) - i; ++j) {
+        for (int j = start; j < start + step && j < n - 1; ++j) {
             double m1 = t_new[prev][j + 1];
             double m2 = t_new[prev][j];
             double m3 = t_new[prevprev][j];
             double m4 = a[j + 1];
-            double m5 = b[((2 * n - 1) - i) - j];
-            double value = fabs(a[j + 1] - b[((2 * n - 1) - i) - j]) + fmin(m1, fmin(m2, m3));
+            double m5 = b[i - (1 + j)];
+            double value = fabs(a[j + 1] - b[i - (1 + j)]) + fmin(m1, fmin(m2, m3));
+            t_new[cur][j + 1] = value;
+        }
+        cur = (cur + 1) % 3;
+        prev = (prev + 1) % 3;
+        prevprev = (prevprev + 1) % 3;
+    }
+
+    for (int i = mo; i < mo + 1; ++i) {
+        pthread_barrier_wait(&barrier);
+        int step = ceil((double)(n - 1) / NTHR);
+        int start = id * step;
+        for (int j = start; j < start + step && j < n - 1; ++j) {
+            double m1 = t_new[prev][j + 1];
+            double m2 = t_new[prev][j];
+            double m3 = t_new[prevprev][j];
+            double m4 = a[j + 1];
+            double m5 = b[i - (1 + j)];
+            double value = fabs(a[j + 1] - b[i - (1 + j)]) + fmin(m1, fmin(m2, m3));
             t_new[cur][j] = value;
         }
         cur = (cur + 1) % 3;
@@ -141,17 +159,18 @@ void diag_thr_cache_mem(void *args) {
         prevprev = (prevprev + 1) % 3;
     }
 
-    for (int i = (2 * mo - n + 1); i < m ; ++i) {
+
+    for (int i = mo + 1; i < m ; ++i) {
         pthread_barrier_wait(&barrier);
-        int step = ceil((double)((2 * n - 1) - i) / nthr);
+        int step = ceil((double)(mo + n - i - 1) / NTHR);
         int start = id * step;
-        for (int j = start; j < start + step && j < (2 * n - 1) - i; ++j) {
+        for (int j = start; j < start + step && j < mo + n - i - 1; ++j) {
             double m1 = t_new[prev][j + 1];
             double m2 = t_new[prev][j];
             double m3 = t_new[prevprev][j + 1];
-            double m4 = a[j + 1 + (i - n)];
-            double m5 = b[((2 * n - 1) - i) - j + (i - n)];
-            double value = fabs(a[j + 1 + (i - n)] - b[n - j - 1]) + fmin(m1, fmin(m2, m3));
+            double m4 = a[j + 1 + (i - mo)];
+            double m5 = b[mo - j - 1];
+            double value = fabs(a[j + 1 + (i - mo)] - b[mo - j - 1]) + fmin(m1, fmin(m2, m3));
             t_new[cur][j] = value;
         }
         cur = (cur + 1) % 3;
@@ -203,8 +222,11 @@ double dtw_diag_par_cache_mem(double *a_, double *b_, int n, int m) {
         pthread_join(threads_diag_cache_mem[i], NULL);
     }
 
-    //printf("cntDIAG: %d\n", cnt);
-    double rez = t_new[(m - 1) % 3][0];
+
+    double rez = t_new[(m - 1 - (n == mo ? 0 : 1)) % 3][0];
+    double rez1 = t_new[0][0];
+    double rez2 = t_new[1][0];
+    double rez3 = t_new[2][0];
     //free(t);
     free(t1);
     free(t2);

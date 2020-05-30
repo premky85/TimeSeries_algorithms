@@ -39,9 +39,12 @@ void diag_thr_cache(void *args) {
     int m = threadData->m;
     int mo = threadData->mo;
 
+    int dif = n == mo ? 0 : 1;
+
     int nthr = NTHR;
 
 
+    //Racunanje zacetnih vrednosti
     if (id == 0) {
         for (int i = 1; i < n; ++i) {
             double m1 = matrix_get(i - 1, i - 1, t, n, m);
@@ -77,9 +80,11 @@ void diag_thr_cache(void *args) {
         }
     }
 
-    for (int i = 2; i < n; ++i) {
+
+    // Zgornji trikotnik
+    for (int i = 2; i < n + 1; ++i) {
         pthread_barrier_wait(&barrier);
-        int step = ceil((double)(i - 1) / nthr);
+        int step = ceil((double)(i) / NTHR);
         int start = id * step + 1;
         for (int j = start; j < start + step && j < i; ++j) {
             double m1 = matrix_get(j, i - 1, t, n, m);
@@ -92,32 +97,55 @@ void diag_thr_cache(void *args) {
         }
     }
 
-    for (int i = n; i < (2 * mo - n + 1); ++i) {
+
+    // Srednji kvadrat
+    for (int i = n + 1; i < mo; ++i) {
         pthread_barrier_wait(&barrier);
-        int step = ceil((double)((2 * n - 1) - i - 1) / nthr);
+        int step = ceil((double)(n - 1) / NTHR);
+
         int start = id * step;
-        for (int j = start; j < start + step && j < (2 * n - 1) - i; ++j) {
+        for (int j = start; j < start + step && j < n - 1; ++j) {
             double m1 = matrix_get(j + 1, i - 1, t, n, m);
             double m2 = matrix_get(j, i - 1, t, n, m);
             double m3 = matrix_get(j, i - 2, t, n, m);
             double m4 = a[j + 1];
-            double m5 = b[((2 * n - 1) - i) - j];
-            double value = fabs(a[j + 1] - b[((2 * n - 1) - i) - j]) + fmin(m1, fmin(m2, m3));
+            double m5 = b[i - (1 + j)];
+            double value = fabs(a[j + 1] - b[i - (1 + j)]) + fmin(m1, fmin(m2, m3));
+            matrix_put(value, j + 1, i, t, n, m);
+        }
+    }
+
+    //problem pri zamiku
+    for (int i = mo; i < mo + 1; ++i) {
+        pthread_barrier_wait(&barrier);
+        int step = ceil((double)(n - 1) / NTHR);
+
+        int start = id * step;
+        for (int j = start; j < start + step && j < n - 1; ++j) {
+            double m1 = matrix_get(j + 1, i - 1, t, n, m);
+            double m2 = matrix_get(j, i - 1, t, n, m);
+            double m3 = matrix_get(j, i - 2, t, n, m);
+            double m4 = a[j + 1];
+            double m5 = b[i - (1 + j)];
+            double value = fabs(a[j + 1] - b[i - (1 + j)]) + fmin(m1, fmin(m2, m3));
             matrix_put(value, j, i, t, n, m);
         }
     }
 
-    for (int i = (2 * mo - n + 1); i < m ; ++i) {
+    //Spodnji trikotnik
+    for (int i = mo + 1; i < m ; ++i) {
         pthread_barrier_wait(&barrier);
-        int step = ceil((double)((2 * n - 1) - i) / nthr);
+        //int step = ceil((double)((2 * n - 1) - i) / nthr);
+        int step = ceil((double)(mo + n - i - 1) / NTHR);
+
         int start = id * step;
-        for (int j = start; j < start + step && j < (2 * n - 1) - i; ++j) {
+        for (int j = start; j < start + step && j < mo + n - i - 1; ++j) {
             double m1 = matrix_get(j + 1, i - 1, t, n, m);
             double m2 = matrix_get(j, i - 1, t, n, m);
             double m3 = matrix_get(j + 1, i - 2, t, n, m);
-            double m4 = a[j + 1 + (i - n)];
-            double m5 = b[((2 * n - 1) - i) - j + (i - n)];
-            double value = fabs(a[j + 1 + (i - n)] - b[n - j - 1]) + fmin(m1, fmin(m2, m3));
+            double m4 = a[j + 1 + (i - mo)];
+            double m5 = b[mo - j - 1];
+            double value = fabs(a[j + 1 + (i - mo)] - b[mo - j - 1]) + fmin(m1, fmin(m2, m3));
             matrix_put(value, j, i, t, n, m);
         }
     }

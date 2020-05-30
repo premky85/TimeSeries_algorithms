@@ -3,7 +3,6 @@
 //
 #include <math.h>
 #include <stdlib.h>
-
 inline double matrix_get(int x_pos, int y_pos, double t[], int x_size, int y_size);
 inline void matrix_put(double value, int x_pos, int y_pos, double t[], int x_size, int y_size);
 
