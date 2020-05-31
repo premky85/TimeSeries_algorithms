@@ -1,9 +1,8 @@
-import os
-import subprocess
 from ctypes import *
 import time
-import gc
 import numpy as np
+import pandas as pd
+
 
 class DTW:
     def __init__(self):
@@ -45,9 +44,6 @@ class DTW:
                 "dtw_fwbk_par_mem": dtw.dtw_fwbk_par_mem,
                 }
 
-    def importData(self, path):
-        None
-
     def run(self, dtw_alg, time_series1, time_series2, out=False):
         xsize = len(time_series1)
         ysize = len(time_series2)
@@ -64,4 +60,9 @@ class DTW:
 
         return rez
 
+
+dtw = DTW()
+
+dtw.run("dtw_prunned", range(10000), range(0, 9999), True)
+dtw.run("dtw_fw", range(10000), range(0, 9999), True)
 
