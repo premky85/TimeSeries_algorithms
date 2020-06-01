@@ -45,6 +45,7 @@ class Plotter():
         small.plot()
         plt.ylabel("sec")
         plt.grid()
+        plt.show()
 
 
     def plotBig(self):
@@ -52,9 +53,22 @@ class Plotter():
         big.plot()
         plt.ylabel("sec")
         plt.grid()
+        plt.show()
+
+    def plot(self, times):
+        df = self.data[times].dropna(axis=0)
+        df.plot()
+        plt.ylabel("sec")
+        plt.grid()
+        plt.show()
+
+
+
 
 plotter = Plotter()
-plotter.plotBig()
+#plotter.plotBig()
+#plotter.plotSmall()
+plotter.plot(["time_fwbk_par_mem", "time_diag_par_cache_mem"])
 
 
 
