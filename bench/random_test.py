@@ -56,7 +56,7 @@ for alg in algs + algs_mem:
     f.close()
 
 
-
+'''
 for x in small:
     arr1 = np.rint(np.random.rand(x) * 10).ctypes.data_as(POINTER(c_int))
     arr2 = np.rint(np.random.rand(x) * 10).ctypes.data_as(POINTER(c_int))
@@ -132,7 +132,7 @@ for x in large:
         f.close()
 
     print()
-
+'''
 for x in xlarge:
     arr1 = np.rint(np.random.rand(x) * 10).ctypes.data_as(POINTER(c_int))
     arr2 = np.rint(np.random.rand(x) * 10).ctypes.data_as(POINTER(c_int))

@@ -7,7 +7,7 @@
 #include <stdio.h>
 #include <pthread.h>
 
-#define NTHR 12
+#define NTHR 6
 
 pthread_barrier_t   barrier;
 
@@ -29,6 +29,7 @@ typedef struct _thread_data_t_diag_cache_mem {
     char cur;
     char prev;
     char prevprev;
+
 } thread_data_t_diag_cache_mem;
 
 thread_data_t_diag_cache_mem thr_struct_diag_cache_mem[NTHR];
@@ -45,38 +46,36 @@ void diag_thr_cache_mem(void *args) {
     char prev = threadData->prev;
     char prevprev = threadData->prevprev;
 
-    int nthr = NTHR;
-
     /*
     if (id == 0) {
         for (int i = 2; i < n; ++i) {
             for (int j = 1; j < i; ++j) {
-                double m1 = t[prevprev][j - 1];
-                double m2 = t[prev][j];
-                double m3 = t[prev][j - 1];
+                double m1 = t_new[prevprev][j - 1];
+                double m2 = t_new[prev][j];
+                double m3 = t_new[prev][j - 1];
                 double m4 = a[j];
                 double m5 = b[i - j];
                 double value = fabs(a[j] - b[i - j]) + fmin(m1, fmin(m2, m3));
-                t[cur][j] = value;
+                t_new[cur][j] = value;
             }
 
             cur = (cur + 1) % 3;
             prev = (prev + 1) % 3;
             prevprev = (prevprev + 1) % 3;
-            t[prev][0] = fabs(a[0] - b[i]) + t[prevprev][0];
-            t[prev][i] = fabs(a[i] - b[0]) + t[prevprev][i - 1];
+            t_new[prev][0] = fabs(a[0] - b[i]) + t_new[prevprev][0];
+            t_new[prev][i] = fabs(a[i] - b[0]) + t_new[prevprev][i - 1];
         }
     } if(nthr > 1)  {
         if (id == 1) {
             for (int i = n; i < (2 * mo - n + 1); ++i) {
                 for (int j = 0; j < (2 * n - 1) - i; ++j) {
-                    double m1 = t[prev][j + 1];
-                    double m2 = t[prev][j];
-                    double m3 = t[prevprev][j];
+                    double m1 = t_new[prev][j + 1];
+                    double m2 = t_new[prev][j];
+                    double m3 = t_new[prevprev][j];
                     double m4 = a[j + 1];
                     double m5 = b[((2 * n - 1) - i) - j];
                     double value = fabs(a[j + 1] - b[((2 * n - 1) - i) - j]) + fmin(m1, fmin(m2, m3));
-                    t[cur][j] = value;
+                    t_new[cur][j] = value;
                 }
                 cur = (cur + 1) % 3;
                 prev = (prev + 1) % 3;
@@ -88,31 +87,32 @@ void diag_thr_cache_mem(void *args) {
     else {
         for (int i = n; i < (2 * mo - n + 1); ++i) {
             for (int j = 0; j < (2 * n - 1) - i; ++j) {
-                double m1 = t[prev][j + 1];
-                double m2 = t[prev][j];
-                double m3 = t[prevprev][j];
+                double m1 = t_new[prev][j + 1];
+                double m2 = t_new[prev][j];
+                double m3 = t_new[prevprev][j];
                 double m4 = a[j + 1];
                 double m5 = b[((2 * n - 1) - i) - j];
                 double value = fabs(a[j + 1] - b[((2 * n - 1) - i) - j]) + fmin(m1, fmin(m2, m3));
-                t[cur][j] = value;
+                t_new[cur][j] = value;
             }
             cur = (cur + 1) % 3;
             prev = (prev + 1) % 3;
             prevprev = (prevprev + 1) % 3;
         }
     }
-     */
+    */
+
 
     for (int i = 2; i < n; ++i) {
         pthread_barrier_wait(&barrier);
-        int step = ceil((double)(i - 1) / nthr);
+        int step = ceil((double)(i - 1) / NTHR);
         int start = id * step + 1;
         for (int j = start; j < start + step && j < i; ++j) {
             double m1 = t_new[prevprev][j - 1];
             double m2 = t_new[prev][j];
             double m3 = t_new[prev][j - 1];
-            double m4 = a[j];
-            double m5 = b[i - j];
+            //double m4 = a[j];
+            //double m5 = b[i - j];
             double value = fabs(a[j] - b[i - j]) + fmin(m1, fmin(m2, m3));
             t_new[cur][j] = value;
         }
@@ -131,8 +131,8 @@ void diag_thr_cache_mem(void *args) {
             double m1 = t_new[prev][j + 1];
             double m2 = t_new[prev][j];
             double m3 = t_new[prevprev][j];
-            double m4 = a[j + 1];
-            double m5 = b[i - (1 + j)];
+            //double m4 = a[j + 1];
+            //double m5 = b[i - (1 + j)];
             double value = fabs(a[j + 1] - b[i - (1 + j)]) + fmin(m1, fmin(m2, m3));
             t_new[cur][j + 1] = value;
         }
@@ -149,8 +149,8 @@ void diag_thr_cache_mem(void *args) {
             double m1 = t_new[prev][j + 1];
             double m2 = t_new[prev][j];
             double m3 = t_new[prevprev][j];
-            double m4 = a[j + 1];
-            double m5 = b[i - (1 + j)];
+            //double m4 = a[j + 1];
+            //double m5 = b[i - (1 + j)];
             double value = fabs(a[j + 1] - b[i - (1 + j)]) + fmin(m1, fmin(m2, m3));
             t_new[cur][j] = value;
         }
@@ -168,8 +168,8 @@ void diag_thr_cache_mem(void *args) {
             double m1 = t_new[prev][j + 1];
             double m2 = t_new[prev][j];
             double m3 = t_new[prevprev][j + 1];
-            double m4 = a[j + 1 + (i - mo)];
-            double m5 = b[mo - j - 1];
+            //double m4 = a[j + 1 + (i - mo)];
+            //double m5 = b[mo - j - 1];
             double value = fabs(a[j + 1 + (i - mo)] - b[mo - j - 1]) + fmin(m1, fmin(m2, m3));
             t_new[cur][j] = value;
         }
@@ -177,6 +177,7 @@ void diag_thr_cache_mem(void *args) {
         prev = (prev + 1) % 3;
         prevprev = (prevprev + 1) % 3;
     }
+
     pthread_exit(NULL);
 }
 
@@ -224,9 +225,9 @@ double dtw_diag_par_cache_mem(double *a_, double *b_, int n, int m) {
 
 
     double rez = t_new[(m - 1 - (n == mo ? 0 : 1)) % 3][0];
-    double rez1 = t_new[0][0];
-    double rez2 = t_new[1][0];
-    double rez3 = t_new[2][0];
+    //double rez1 = t_new[0][0];
+    //double rez2 = t_new[1][0];
+    //double rez3 = t_new[2][0];
     //free(t);
     free(t1);
     free(t2);
