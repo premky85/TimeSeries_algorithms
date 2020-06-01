@@ -7,7 +7,7 @@
 #include <stdio.h>
 #include <pthread.h>
 
-#define NTHR 12
+#define NTHR 6
 
 pthread_barrier_t   barrier;
 

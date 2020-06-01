@@ -63,6 +63,6 @@ class DTW:
 
 dtw = DTW()
 
-dtw.run("dtw_diag_par_cache_mem", range(100000), range(100000), True)
-dtw.run("dtw_fw_mem", range(100000), range(100000), True)
+dtw.run("dtw_diag_par_cache", range(30000), range(30000), True)
+#dtw.run("dtw_fw_mem", range(100000), range(100000), True)
 
