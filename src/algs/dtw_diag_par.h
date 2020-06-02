@@ -7,7 +7,7 @@
 #include <stdio.h>
 #include <pthread.h>
 
-#define NTHR 8
+#define NTHR 12
 
 pthread_barrier_t   barrier;
 
@@ -111,9 +111,9 @@ void diag_thr(void *args) {
 
 
         for (int j = start; j < start + step && j < n + m - i - 1 - dif; ++j) {
-            double m1 = matrix_get(n - 2 - j, i - m + 1 + j, t, m, n);
-            double m2 = matrix_get(n - 3 - j, i - m + 1 + j, t, m, n);
-            double m3 = matrix_get(n - 3 - j, i - m + 2 + j, t, m, n);
+            double m1 = matrix_get(n - m - 1 - j, i - m + 1 + j, t, m, n);
+            double m2 = matrix_get(n - m - 2 - j, i - m + 1 + j, t, m, n);
+            double m3 = matrix_get(n - m - 2 - j, i - m + 2 + j, t, m, n);
             double value = fabs(a[m - 1 - j] - b[j + 1 + i - m + dif]) + fmin(m1, fmin(m2, m3));
 
             matrix_put(value, m - 1 - j, j + 1 + i - m + dif, t, m, n);

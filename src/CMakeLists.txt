@@ -19,7 +19,7 @@ add_library(${PROJECT_NAME} SHARED
         algs/dtw_fw.h
         algs/helpers.h
         algs/dtw_algs.c
-        algs/dtw_prunned.h
+        algs/dtw_pruned.h
         algs/dtw_diag_par.h
         algs/dtw_fw_mem.h
         algs/dtw_bk_mem.h
@@ -28,7 +28,7 @@ add_library(${PROJECT_NAME} SHARED
         algs/dtw_diag_cache_mem.h
         algs/dtw_diag_par_cache.h
         algs/dtw_diag_par_cache_mem.h
-)
+        dtw_diag_par_ocl.h)
 
 
 #add_executable(${PROJECT_NAME} main.c)

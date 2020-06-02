@@ -9,7 +9,7 @@
 #include "dtw_fwbk.h"
 #include "dtw_fwbk_par.h"
 #include "dtw_fwbk_par_mem.h"
-#include "dtw_prunned.h"
+#include "dtw_pruned.h"
 #include "dtw_diag.h"
 #include "dtw_diag_cache.h"
 #include "dtw_diag_cache_mem.h"
@@ -30,7 +30,7 @@ double dtw_fwbk(double *a, double *b, int n, int m);
 
 double dtw_fwbk_par(double *a, double *b, int n, int m);
 
-double dtw_prunned(double *a, double *b, int n, int m);
+double dtw_pruned(double *a, double *b, int n, int m);
 
 double dtw_diag_par(double *a, double *b, int n, int m);
 

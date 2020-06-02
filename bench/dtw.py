@@ -13,7 +13,7 @@ class DTW:
         dtw.dtw_bk.restype = c_double
         dtw.dtw_bk_mem.restype = c_double
 
-        dtw.dtw_prunned.restype = c_double
+        dtw.dtw_pruned.restype = c_double
         dtw.dtw_diag.restype = c_double
         dtw.dtw_diag_cache.restype = c_double
         dtw.dtw_diag_cache_mem.restype = c_double
@@ -29,7 +29,7 @@ class DTW:
 
         self.algs = {
                 "dtw_fw": dtw.dtw_fw,
-                "dtw_prunned": dtw.dtw_prunned,
+                "dtw_pruned": dtw.dtw_pruned,
                 "dtw_bk": dtw.dtw_bk,
                 "dtw_diag": dtw.dtw_diag,
                 "dtw_diag_cache": dtw.dtw_diag_cache,
@@ -61,8 +61,10 @@ class DTW:
         return rez
 
 
-dtw = DTW()
 
-dtw.run("dtw_diag_par_cache", range(30000), range(30000), True)
-#dtw.run("dtw_fw_mem", range(100000), range(100000), True)
+
+#dtw = DTW()
+
+#dtw.run("dtw_prunned", range(0, 29999), range(30000), True)
+#dtw.run("dtw_fw", range(0, 29999), range(30000), True)
 

@@ -94,12 +94,12 @@ int main(int argc, char *argv[]) {
         time = (double)(stop.tv_sec-start.tv_sec) + (double)(stop.tv_nsec-start.tv_nsec)/1000000000;
 
 
-    }  else if (strcmp(argv[1], "dtw_prunned") == 0) {
-        fd = fopen("../../bench/results/dtw_prunned.csv", "a+");
+    }  else if (strcmp(argv[1], "dtw_pruned") == 0) {
+        fd = fopen("../../bench/results/dtw_pruned.csv", "a+");
         //printf("dtw PARALLEL: =======================================================\n");
 
         clock_gettime(CLOCK_REALTIME, &start);
-        rez = dtw_prunned(a, b, n, m);
+        rez = dtw_pruned(a, b, n, m);
         clock_gettime(CLOCK_REALTIME, &stop);
         time = (double)(stop.tv_sec-start.tv_sec) + (double)(stop.tv_nsec-start.tv_nsec)/1000000000;
     } else if (strcmp(argv[1], "dtw_fw_mem") == 0) {
