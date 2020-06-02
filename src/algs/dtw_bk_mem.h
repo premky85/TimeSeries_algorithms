@@ -5,21 +5,22 @@
 #include <math.h>
 #include <stdlib.h>
 
-double dtw_bk_mem(double *a, double *b, int n, int m) {
-    double *t1 = (double*)malloc(n * sizeof(double));
-    double *t2 = (double*)malloc(n * sizeof(double));
+double dtw_bk_mem(double *a, double *b, int m, int n) {
+    double *t1 = (double*)malloc(m * sizeof(double));
+    double *t2 = (double*)malloc(m * sizeof(double));
     char current = 0;
 
-    t1[n - 1] = fabs(a[n - 1] - b[m - 1]);
-    for (int i = n - 2; i >= 0; --i) {
-        t1[i] = fabs(a[i] - b[m - 1]) + t1[i + 1];
+    t1[m - 1] = fabs(a[m - 1] - b[n - 1]);
+    for (int i = m - 2; i >= 0; --i) {
+        double x = fabs(a[i] - b[n - 1]) + t1[i + 1];
+        t1[i] = x;
     }
 
     double *prev = t1;
     double *cur = t2;
-    for (int j = m - 2; j >= 0; --j) {
-        cur[n - 1] = fabs(a[n - 1] - b[j]) + prev[n - 1];
-        for (int i = n - 2; i >= 0; --i) {
+    for (int j = n - 2; j >= 0; --j) {
+        cur[m - 1] = fabs(a[m - 1] - b[j]) + prev[m - 1];
+        for (int i = m - 2; i >= 0; --i) {
             double m1 = prev[i];
             double m2 = prev[i + 1];
             double m3 = cur[i + 1];

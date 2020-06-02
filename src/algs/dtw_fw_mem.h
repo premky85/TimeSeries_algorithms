@@ -11,21 +11,21 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-double dtw_fw_mem(double *a, double *b, int n, int m) {
-    double *t1 = (double*)malloc(n * sizeof(double));
-    double *t2 = (double*)malloc(n * sizeof(double));
+double dtw_fw_mem(double *a, double *b, int m, int n) {
+    double *t1 = (double*)malloc(m * sizeof(double));
+    double *t2 = (double*)malloc(m * sizeof(double));
     char current = 0;
 
     t1[0] = fabs(a[0] - b[0]);
-    for (int i = 1; i < n; ++i) {
+    for (int i = 1; i < m; ++i) {
         t1[i] = fabs(a[i] - b[0]) + t1[i - 1];
     }
 
     double *prev = t1;
     double *cur = t2;
-    for (int j = 1; j < m; ++j) {
+    for (int j = 1; j < n; ++j) {
         cur[0] = fabs(a[0] - b[j]) + prev[0];
-        for (int i = 1; i < n; ++i) {
+        for (int i = 1; i < m; ++i) {
             double m1 = prev[i];
             double m2 = prev[i - 1];
             double m3 = cur[i - 1];
@@ -43,7 +43,7 @@ double dtw_fw_mem(double *a, double *b, int n, int m) {
 
     //printf("cntFW: %d\n", cnt);
 
-    double rez = prev[n - 1];
+    double rez = prev[m - 1];
     free(t1);
     free(t2);
 

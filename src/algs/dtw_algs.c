@@ -22,7 +22,7 @@
 
 double dtw_fw(double *a, double *b, int n, int m);
 
-double dtw_bk(double *a, double *b, int n, int m);
+double dtw_bk(double *a, double *b, int m, int n);
 
 double dtw_diag(double *a, double *b, int n, int m);
 

@@ -32,11 +32,11 @@ double *mid1;
 double *mid2;
 
 
-double dtw_fwbk_par_mem(double *a, double *b, int n, int m) {
-    double *t1 = (double*)malloc(n * sizeof(double));
-    double *t2 = (double*)malloc(n * sizeof(double));
-    double *t3 = (double*)malloc(n * sizeof(double));
-    double *t4 = (double*)malloc(n * sizeof(double));
+double dtw_fwbk_par_mem(double *a, double *b, int m, int n) {
+    double *t1 = (double*)malloc(m * sizeof(double));
+    double *t2 = (double*)malloc(m * sizeof(double));
+    double *t3 = (double*)malloc(m * sizeof(double));
+    double *t4 = (double*)malloc(m * sizeof(double));
 
 
 
@@ -70,13 +70,13 @@ double dtw_fwbk_par_mem(double *a, double *b, int n, int m) {
 
     double d = INFINITY;
 
-    for (int k = 0; k < n - 1; ++k) {
+    for (int k = 0; k < m - 1; ++k) {
         double x = mid1[k] + mid2[k];
         double y = mid1[k] + mid2[k + 1];
         d = fmin(d, fmin(x, y));
     }
 
-    double x = mid1[n - 1] + mid2[n - 1];
+    double x = mid1[m - 1] + mid2[m - 1];
     d = fmin(d, x);
 
     double rez = d;
@@ -98,12 +98,12 @@ void *dtw_upper_par_mem(void *args) {
     int n = threadData->n;
     int m = threadData->m;
 
-    int half = floor((double)(m) / 2);
+    int half = floor((double)(n) / 2);
 
     char current = 0;
 
     t1[0] = fabs(a[0] - b[0]);
-    for (int i = 1; i < n; ++i) {
+    for (int i = 1; i < m; ++i) {
         t1[i] = fabs(a[i] - b[0]) + t1[i - 1];
     }
 
@@ -111,7 +111,7 @@ void *dtw_upper_par_mem(void *args) {
     double *cur = t2;
     for (int j = 1; j < half; ++j) {
         cur[0] = fabs(a[0] - b[j]) + prev[0];
-        for (int i = 1; i < n; ++i) {
+        for (int i = 1; i < m; ++i) {
             double m1 = prev[i];
             double m2 = prev[i - 1];
             double m3 = cur[i - 1];
@@ -142,19 +142,19 @@ void *dtw_lower_par_mem(void *args) {
     int m = threadData->m;
     char current = 0;
 
-    int half = floor((double)(m) / 2);
+    int half = floor((double)(n) / 2);
 
-    t1[n - 1] = fabs(a[n - 1] - b[m - 1]);
-    for (int i = n - 2; i >= 0; --i) {
+    t1[m - 1] = fabs(a[m - 1] - b[n - 1]);
+    for (int i = m - 2; i >= 0; --i) {
 
-        t1[i] = fabs(a[i] - b[m - 1]) + t1[i + 1];
+        t1[i] = fabs(a[i] - b[n - 1]) + t1[i + 1];
     }
 
     double *prev = t1;
     double *cur = t2;
-    for (int j = m - 2; j >= half; --j) {
-        cur[n - 1] = fabs(a[n - 1] - b[j]) + prev[n - 1];
-        for (int i = n - 2; i >= 0; --i) {
+    for (int j = n - 2; j >= half; --j) {
+        cur[m - 1] = fabs(a[m - 1] - b[j]) + prev[m - 1];
+        for (int i = m - 2; i >= 0; --i) {
             double m1 = prev[i];
             double m2 = prev[i + 1];
             double m3 = cur[i + 1];

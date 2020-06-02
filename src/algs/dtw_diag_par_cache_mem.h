@@ -25,7 +25,7 @@ typedef struct _thread_data_t_diag_cache_mem {
     int id;
     int n;
     int m;
-    int mo;
+    int no;
     char cur;
     char prev;
     char prevprev;
@@ -41,7 +41,7 @@ void diag_thr_cache_mem(void *args) {
     int id = threadData->id;
     int n = threadData->n;
     int m = threadData->m;
-    int mo = threadData->mo;
+    int no = threadData->no;
     char cur = threadData->cur;
     char prev = threadData->prev;
     char prevprev = threadData->prevprev;
@@ -103,7 +103,7 @@ void diag_thr_cache_mem(void *args) {
     */
 
 
-    for (int i = 2; i < n; ++i) {
+    for (int i = 2; i < m; ++i) {
         pthread_barrier_wait(&barrier);
         int step = ceil((double)(i - 1) / NTHR);
         int start = id * step + 1;
@@ -123,11 +123,11 @@ void diag_thr_cache_mem(void *args) {
         t_new[prev][i] = fabs(a[i] - b[0]) + t_new[prevprev][i - 1];
     }
 
-    for (int i = n + 1; i < mo; ++i) {
+    for (int i = m + 1; i < no; ++i) {
         pthread_barrier_wait(&barrier);
-        int step = ceil((double)(n - 1) / NTHR);
+        int step = ceil((double)(m - 1) / NTHR);
         int start = id * step;
-        for (int j = start; j < start + step && j < n - 1; ++j) {
+        for (int j = start; j < start + step && j < m - 1; ++j) {
             double m1 = t_new[prev][j + 1];
             double m2 = t_new[prev][j];
             double m3 = t_new[prevprev][j];
@@ -141,11 +141,11 @@ void diag_thr_cache_mem(void *args) {
         prevprev = (prevprev + 1) % 3;
     }
 
-    for (int i = mo; i < mo + 1; ++i) {
+    for (int i = no; i < no + 1; ++i) {
         pthread_barrier_wait(&barrier);
-        int step = ceil((double)(n - 1) / NTHR);
+        int step = ceil((double)(m - 1) / NTHR);
         int start = id * step;
-        for (int j = start; j < start + step && j < n - 1; ++j) {
+        for (int j = start; j < start + step && j < m - 1; ++j) {
             double m1 = t_new[prev][j + 1];
             double m2 = t_new[prev][j];
             double m3 = t_new[prevprev][j];
@@ -160,17 +160,17 @@ void diag_thr_cache_mem(void *args) {
     }
 
 
-    for (int i = mo + 1; i < m ; ++i) {
+    for (int i = no + 1; i < n ; ++i) {
         pthread_barrier_wait(&barrier);
-        int step = ceil((double)(mo + n - i - 1) / NTHR);
+        int step = ceil((double)(no + m - i - 1) / NTHR);
         int start = id * step;
-        for (int j = start; j < start + step && j < mo + n - i - 1; ++j) {
+        for (int j = start; j < start + step && j < no + m - i - 1; ++j) {
             double m1 = t_new[prev][j + 1];
             double m2 = t_new[prev][j];
             double m3 = t_new[prevprev][j + 1];
             //double m4 = a[j + 1 + (i - mo)];
             //double m5 = b[mo - j - 1];
-            double value = fabs(a[j + 1 + (i - mo)] - b[mo - j - 1]) + fmin(m1, fmin(m2, m3));
+            double value = fabs(a[j + 1 + (i - no)] - b[no - j - 1]) + fmin(m1, fmin(m2, m3));
             t_new[cur][j] = value;
         }
         cur = (cur + 1) % 3;
@@ -181,14 +181,14 @@ void diag_thr_cache_mem(void *args) {
     pthread_exit(NULL);
 }
 
-double dtw_diag_par_cache_mem(double *a_, double *b_, int n, int m) {
-    int mo = m;
-    m = n + m - 1;
+double dtw_diag_par_cache_mem(double *a_, double *b_, int m, int n) {
+    int no = n;
+    n = m + n - 1;
 
 
-    t1 = (double*)malloc(n * sizeof(double));
-    t2 = (double*)malloc(n * sizeof(double));
-    t3 = (double*)malloc(n * sizeof(double));
+    t1 = (double*)malloc(m * sizeof(double));
+    t2 = (double*)malloc(m * sizeof(double));
+    t3 = (double*)malloc(m * sizeof(double));
 
     char cur = 2;
     char prev = 1;
@@ -209,13 +209,13 @@ double dtw_diag_par_cache_mem(double *a_, double *b_, int n, int m) {
         thr_struct_diag_cache_mem[i].id = i;
         thr_struct_diag_cache_mem[i].n = n;
         thr_struct_diag_cache_mem[i].m = m;
-        thr_struct_diag_cache_mem[i].mo = mo;
+        thr_struct_diag_cache_mem[i].no = no;
         thr_struct_diag_cache_mem[i].cur = cur;
         thr_struct_diag_cache_mem[i].prev = prev;
         thr_struct_diag_cache_mem[i].prevprev = prevprev;
         pthread_create(&threads_diag_cache_mem[i],
                        NULL,
-                       diag_thr_cache_mem,
+                       (void *)diag_thr_cache_mem,
                        &thr_struct_diag_cache_mem[i]);
     }
 
@@ -224,7 +224,7 @@ double dtw_diag_par_cache_mem(double *a_, double *b_, int n, int m) {
     }
 
 
-    double rez = t_new[(m - 1 - (n == mo ? 0 : 1)) % 3][0];
+    double rez = t_new[(n - 1 - (m == no ? 0 : 1)) % 3][0];
     //double rez1 = t_new[0][0];
     //double rez2 = t_new[1][0];
     //double rez3 = t_new[2][0];
