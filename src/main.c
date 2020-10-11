@@ -28,7 +28,7 @@ int main(int argc, char *argv[]) {
     int seed1 = atoi(argv[3]);
     int seed2 = atoi(argv[4]);
     int n = atoi(argv[2]);
-    int m = n;
+    int m = n - 2;
     FILE* fd;
     //double *t = calloc(n * m, sizeof(double));
 

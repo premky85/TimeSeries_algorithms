@@ -1,4 +1,15 @@
 .*
+build/*
 src/cmake-build-debug/*
 bench/__pycache__/*
+bench/data/*
+bench/graphs/*
+bench/results/*
+bench/kNN.py
+bench/plot.py
+bench/print_matrix.py
+bench/results_random_time_series/*
+src/algs/dtw_diag_fwbk_par.h
+src/algs/kernel_dtw_diag_par.cl
+src/dtw_diag_par_ocl.h
 !/.gitignore

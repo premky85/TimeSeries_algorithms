@@ -2,10 +2,6 @@
 // Created by premk on 1. 03. 20.
 //
 
-//
-// Created by premk on 2. 02. 20.
-//
-
 #include <pthread.h>
 
 #include <math.h>
@@ -32,7 +28,7 @@ double *mid1;
 double *mid2;
 
 
-double dtw_fwbk_par_mem(double *a, double *b, int m, int n) {
+double dtw_fwbk_par_mem(double *a, double *b, int n, int m) {
     double *t1 = (double*)malloc(m * sizeof(double));
     double *t2 = (double*)malloc(m * sizeof(double));
     double *t3 = (double*)malloc(m * sizeof(double));
@@ -97,36 +93,29 @@ void *dtw_upper_par_mem(void *args) {
     double *b = threadData->b;
     int n = threadData->n;
     int m = threadData->m;
-
     int half = floor((double)(n) / 2);
-
     char current = 0;
 
     t1[0] = fabs(a[0] - b[0]);
-    for (int i = 1; i < m; ++i) {
-        t1[i] = fabs(a[i] - b[0]) + t1[i - 1];
+    for (int j = 1; j < m; ++j) {
+        t1[j] = fabs(a[0] - b[j]) + t1[j - 1];
     }
 
     double *prev = t1;
     double *cur = t2;
-    for (int j = 1; j < half; ++j) {
-        cur[0] = fabs(a[0] - b[j]) + prev[0];
-        for (int i = 1; i < m; ++i) {
-            double m1 = prev[i];
-            double m2 = prev[i - 1];
-            double m3 = cur[i - 1];
+    for (int i = 1; i < half; ++i) {
+        cur[0] = fabs(a[i] - b[0]) + prev[0];
+        for (int j = 1; j < m; ++j) {
+            double m1 = prev[j];
+            double m2 = prev[j - 1];
+            double m3 = cur[j - 1];
             double tmp = fabs(a[i] - b[j]) + fmin(m1, fmin(m2, m3));
-            cur[i] = tmp;//fabs(a[i] - b[j]) + fmin(m1, fmin(m2, m3));
+            cur[j] = tmp;//fabs(a[i] - b[j]) + fmin(m1, fmin(m2, m3));
         }
-
-
-
         current = 1 - current;
         prev = current == 0 ? t1 : t2;
         cur = current == 0 ? t2 : t1;
-
     }
-
     mid1 = prev;
     pthread_exit(NULL);
 }
@@ -140,35 +129,32 @@ void *dtw_lower_par_mem(void *args) {
     double *b = threadData->b;
     int n = threadData->n;
     int m = threadData->m;
+    int half = floor((double)(n) / 2);
     char current = 0;
 
-    int half = floor((double)(n) / 2);
-
-    t1[m - 1] = fabs(a[m - 1] - b[n - 1]);
-    for (int i = m - 2; i >= 0; --i) {
-
-        t1[i] = fabs(a[i] - b[n - 1]) + t1[i + 1];
+    t1[m - 1] = fabs(a[n - 1] - b[m - 1]);
+    for (int j = m - 2; j >= 0; --j) {
+        double x = fabs(a[n - 1] - b[j]) + t1[j + 1];
+        t1[j] = x;
     }
 
     double *prev = t1;
     double *cur = t2;
-    for (int j = n - 2; j >= half; --j) {
-        cur[m - 1] = fabs(a[m - 1] - b[j]) + prev[m - 1];
-        for (int i = m - 2; i >= 0; --i) {
-            double m1 = prev[i];
-            double m2 = prev[i + 1];
-            double m3 = cur[i + 1];
+    for (int i = n - 2; i >= half; --i) {
+        cur[m - 1] = fabs(a[i] - b[m - 1]) + prev[m - 1];
+        for (int  j = m - 2; j >= 0; --j) {
+            double m1 = prev[j];
+            double m2 = prev[j + 1];
+            double m3 = cur[j + 1];
             double tmp = fabs(a[i] - b[j]) + fmin(m1, fmin(m2, m3));
-            cur[i] = tmp;//fabs(a[i] - b[j]) + fmin(m1, fmin(m2, m3));
+            cur[j] = tmp;
         }
-
-
 
         current = 1 - current;
         prev = current == 0 ? t1 : t2;
         cur = current == 0 ? t2 : t1;
-
     }
+
     mid2 = prev;
     pthread_exit(NULL);
 

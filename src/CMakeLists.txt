@@ -11,7 +11,8 @@ include_directories(algs)
 
 
 
-add_library(${PROJECT_NAME} SHARED
+add_library(
+        ${PROJECT_NAME} SHARED
         algs/dtw_bk.h
         algs/dtw_diag.h
         algs/dtw_fwbk.h
@@ -28,7 +29,8 @@ add_library(${PROJECT_NAME} SHARED
         algs/dtw_diag_cache_mem.h
         algs/dtw_diag_par_cache.h
         algs/dtw_diag_par_cache_mem.h
-        dtw_diag_par_ocl.h)
+        algs/euclidean.h
+        )
 
 
 #add_executable(${PROJECT_NAME} main.c)

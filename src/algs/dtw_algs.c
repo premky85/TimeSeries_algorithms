@@ -14,6 +14,7 @@
 #include "dtw_diag_cache.h"
 #include "dtw_diag_cache_mem.h"
 #include "dtw_diag_par.h"
+#include "euclidean.h"
 #include "dtw_diag_par_cache.h"
 #include "dtw_diag_par_cache_mem.h"
 
@@ -47,6 +48,8 @@ double dtw_diag_cache_mem(double *a, double *b, int n, int m);
 double dtw_diag_par_cache(double *a_, double *b_, int n, int m);
 
 double dtw_diag_par_cache_mem(double *a_, double *b_, int n, int m);
+
+double euclidean(double *a_, double *b_, int n, int m);
 
 
 

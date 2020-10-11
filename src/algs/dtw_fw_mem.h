@@ -11,26 +11,26 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-double dtw_fw_mem(double *a, double *b, int m, int n) {
+double dtw_fw_mem(double *a, double *b, int n, int m) {
     double *t1 = (double*)malloc(m * sizeof(double));
     double *t2 = (double*)malloc(m * sizeof(double));
     char current = 0;
 
     t1[0] = fabs(a[0] - b[0]);
-    for (int i = 1; i < m; ++i) {
-        t1[i] = fabs(a[i] - b[0]) + t1[i - 1];
+    for (int j = 1; j < m; ++j) {
+        t1[j] = fabs(a[0] - b[j]) + t1[j - 1];
     }
 
     double *prev = t1;
     double *cur = t2;
-    for (int j = 1; j < n; ++j) {
-        cur[0] = fabs(a[0] - b[j]) + prev[0];
-        for (int i = 1; i < m; ++i) {
-            double m1 = prev[i];
-            double m2 = prev[i - 1];
-            double m3 = cur[i - 1];
+    for (int i = 1; i < n; ++i) {
+        cur[0] = fabs(a[i] - b[0]) + prev[0];
+        for (int j = 1; j < m; ++j) {
+            double m1 = prev[j];
+            double m2 = prev[j - 1];
+            double m3 = cur[j - 1];
             double tmp = fabs(a[i] - b[j]) + fmin(m1, fmin(m2, m3));
-            cur[i] = tmp;//fabs(a[i] - b[j]) + fmin(m1, fmin(m2, m3));
+            cur[j] = tmp;//fabs(a[i] - b[j]) + fmin(m1, fmin(m2, m3));
         }
 
 
@@ -40,8 +40,6 @@ double dtw_fw_mem(double *a, double *b, int m, int n) {
         cur = current == 0 ? t2 : t1;
 
     }
-
-    //printf("cntFW: %d\n", cnt);
 
     double rez = prev[m - 1];
     free(t1);

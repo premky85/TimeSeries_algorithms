@@ -8,10 +8,10 @@ def dtw_fw(a, b, norm=np.linalg.norm):
 		t[i, 0] = t[i-1, 0] + abs(a[i] - b[0])
 	for j in range(1, n):
 		t[0, j] = t[0, j-1] + abs(a[0] - b[j])
-	for j in range(1, n):
-		for i in range(1, m):
+	for i in range(1, n):
+		for j in range(1, m):
 			t[i, j] = abs(a[i] - b[j]) + min(t[i-1, j-1], t[i-1, j], t[i, j-1])
-	return np.transpose(t)
+	return t.T#.transpose(t)
 
 
 a = input("A: ")
