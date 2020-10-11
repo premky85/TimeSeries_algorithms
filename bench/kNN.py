@@ -2,7 +2,7 @@ from ctypes import *
 import time
 import numpy as np
 import pandas as pd
-from dtw import DTW
+from DTW.dtw import DTW
 import itertools
 from sktime.utils.load_data import load_from_tsfile_to_dataframe, load_from_arff_to_dataframe
 import os
@@ -58,7 +58,7 @@ class kNN():
                 print()
     '''
 
-    def fit(self, dtw_algorithms=None, printOut=True):
+    def fit(self, dtw_algorithms=None, print_out=True):
         #self.calcPairs()
         data = self.path.split("/")[-1].split(".")[0]
         if dtw_algorithms:
@@ -79,13 +79,13 @@ class kNN():
                     arr1 = list(map(float, self.dfTest.loc[a1].dropna().tolist()))
                     arr2 = list(map(float, self.dfTrain.loc[a2].dropna().tolist()))
                     for alg in algs:
-                        rez, tim = dtw.run(alg, arr1, arr2, printOut=False)
+                        rez, tim = dtw.run(alg, arr1, arr2, print_out=False)
                         f = open("results/" + data + "_" + alg + ".csv", "a+")
                         f.write(str(a1) + "," + str(a2) + "," + str(tim) + "," + str(rez) + "\n")
                         f.close()
                     end = time.perf_counter()
                     tim = (end - start)
-                    if printOut:
+                    if print_out:
                         hour = tim // 3600
                         min = (tim % 3600) // 60
                         sec = tim - hour * 3600 - min * 60
@@ -104,7 +104,7 @@ class kNN():
                         arr1 = self.df.loc[a1][0].dropna().tolist()
                         arr2 = self.df.loc[a2][0].dropna().tolist()
                         for alg in algs:
-                            rez, tim = dtw.run(alg, arr1, arr2, printOut=True)
+                            rez, tim = dtw.run(alg, arr1, arr2, print_out=True)
                             f = open("results/" + data + "_" + alg + ".csv", "a+")
                             f.write(str(a1) + "," + str(a2) + "," + str(tim) + "," + str(rez) + "\n")
                             f.close()
@@ -178,11 +178,11 @@ knn = kNN(dtw)
 
 '''
 knn.importDataCsv("data/AllGestureWiimoteX", classRow="target", header=0, unknownLabel='?')
-knn.fit(["dtw_fwbk_par", "dtw_pruned", "dtw_diag_par_cache", "dtw_fw", "euclidean"], printOut=True)
+knn.fit(["dtw_fwbk_par", "dtw_pruned", "dtw_diag_par_cache", "dtw_fw", "euclidean"], print_out=True)
 knn.importDataCsv("data/AllGestureWiimoteY", classRow="target", header=0, unknownLabel='?')
-knn.fit(["dtw_fwbk_par", "dtw_pruned", "dtw_diag_par_cache", "dtw_fw", "euclidean"], printOut=True)
+knn.fit(["dtw_fwbk_par", "dtw_pruned", "dtw_diag_par_cache", "dtw_fw", "euclidean"], print_out=True)
 knn.importDataCsv("data/AllGestureWiimoteZ", classRow="target", header=0, unknownLabel='?')
-knn.fit(["dtw_fwbk_par", "dtw_pruned", "dtw_diag_par_cache", "dtw_fw", "euclidean"], printOut=True)
+knn.fit(["dtw_fwbk_par", "dtw_pruned", "dtw_diag_par_cache", "dtw_fw", "euclidean"], print_out=True)
 
 knn.importDataCsv("data/Car")
 knn.fit(["dtw_fwbk_par", "dtw_pruned", "dtw_diag_par_cache", "dtw_fw", "euclidean"])

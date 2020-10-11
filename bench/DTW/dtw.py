@@ -5,7 +5,7 @@ import pandas as pd
 
 class DTW:
     def __init__(self):
-        so_file = "../src/cmake-build-debug/libtimeseries_dtw.so"
+        so_file = "bench/DTW/lib/libtimeseries_dtw.so" 
         dtw = CDLL(so_file)
         dtw.dtw_fw.restype = c_double
         dtw.dtw_fw_mem.restype = c_double
@@ -29,7 +29,6 @@ class DTW:
         dtw.euclidean.restype = c_double
 
         self.algs = {
-                "euclidean": dtw.euclidean,
                 "dtw_fw": dtw.dtw_fw,
                 "dtw_pruned": dtw.dtw_pruned,
                 "dtw_bk": dtw.dtw_bk,
@@ -46,34 +45,23 @@ class DTW:
                 "dtw_fwbk_par_mem": dtw.dtw_fwbk_par_mem,
                 }
 
-    def run(self, dtw_alg, time_series1, time_series2, printOut=False, writeName=None):
-        xsize = len(time_series1)
-        ysize = len(time_series2)
+    def run(self, dtw_alg, time_series1, time_series2, print_out=False, write_csv=None):
+        ysize = len(time_series1)
+        xsize = len(time_series2)
 
-        time_series1 = np.array(time_series1).ctypes.data_as(POINTER(c_double))
-        time_series2 = np.array(time_series2).ctypes.data_as(POINTER(c_double))
+        time_series_1 = np.array(time_series1).astype(float).ctypes.data_as(POINTER(c_double))
+        time_series_2 = np.array(time_series2).astype(float).ctypes.data_as(POINTER(c_double))
         start = time.perf_counter()
-        rez = self.algs[dtw_alg](time_series1, time_series2, xsize, ysize)
+        rez = self.algs[dtw_alg](time_series_1, time_series_2, xsize, ysize)
         end = time.perf_counter()
         tim = (end - start)
 
-        if writeName:
-            f = open("results/" + writeName + ".csv", "a+")
-            f.write(str(tim) + "\n")
+        if write_csv:
+            f = open(write_csv + ".csv", "a+")
+            f.write(str(ysize) + ',' + str(xsize) + ',' + str(tim) + "\n")
             f.close()
 
-        if printOut:
+        if print_out:
             print("{} | result: {} | time: {}".format(dtw_alg, rez, tim))
 
         return (rez, tim)
-
-
-
-
-#dtw = DTW()
-
-#dtw.run("dtw_bk_mem", range(10000), range(10000), True, "1_thread")
-#dtw.run("dtw_fw", range(0, 29999), range(30000), True)
-
-#for alg in dtw.algs:
-#    print(alg)
