@@ -7,8 +7,8 @@ lengths of first and second time series. Main purpose of this project is to opti
 
 ## Installation and usage
 
-Clone repository to your computer. Folder "src" contains DTW algorithms written in C language. If you change them you need to compile them using CMake. And copy newly compiled "libtimeseries_dtw.so" file to "bench/DTW/lib/"
-Folder "bench" includes Python scripts for benchmarking DTW algorithms. Main DTW class is contained in "bench/DTW/dtw.py" file.
+Clone repository to your computer. Folder <code>src/</code> contains DTW algorithms written in C language. If you change them you need to compile them using CMake. And copy newly compiled <code>libtimeseries_dtw.so</code> file to <code>bench/DTW/lib/</code>
+Folder "bench" includes Python scripts for benchmarking DTW algorithms. Main DTW class is contained in <code>bench/DTW/dtw.py</code> file.
 
 If you wish to use DTW to calculate distance between two time series you can do it like this
 
